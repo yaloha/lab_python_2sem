@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Изучить FastAPI",
+    "payload": "Прочитать документацию про Dependency Injection и Lifespan."
+  },
+  {
+    "id": 2,
+    "name": "Настроить FileSource",
+    "payload": "Убедиться, что кодировка файла UTF-8 и путь указан верно."
+  },
+  {
+    "id": 3,
+    "123": "Подготовить Лабу №1",
+    "payload": "Проверить работу Protocol и Duck Typing через логгер."
+  }
+]
