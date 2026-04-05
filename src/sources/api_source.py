@@ -12,9 +12,11 @@ logger = logging.getLogger(__name__)
 
 class APISource:
     def __init__(self, url: str = DEFAULT_EXTERNAL_API_URL):
+        "initializes API source with URL, at this URL GET endpoint that returns List[Task] should be located"
         self.url = url
 
     async def get_tasks(self) -> List[Task]:
+        """returns a list of all tasks from remote API that has a GET endpoint located at self.url"""
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(self.url, timeout=5.0)

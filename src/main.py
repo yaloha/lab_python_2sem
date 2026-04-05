@@ -4,7 +4,7 @@ from typing import List
 
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
-from constants import DEFAULT_EXTERNAL_API_URL
+from constants import DEFAULT_EXTERNAL_API_URL, DEFAULT_FILE_NAME, DEFAULT_RANDOM_TASKS_AMMOUNT
 from models import Task
 from protocols import TaskSource
 from sources.api_source import APISource
@@ -21,7 +21,9 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-def source_choice(file_name: str = "file.json", url: str = DEFAULT_EXTERNAL_API_URL, n: int = 5) -> TaskSource:
+def source_choice(file_name: str = DEFAULT_FILE_NAME, url: str = DEFAULT_EXTERNAL_API_URL, n: int = DEFAULT_RANDOM_TASKS_AMMOUNT) -> TaskSource:
+    """randomly chooses a task source from the 3 located in /sources directory,
+    takes file_name, url and n -> settings for randomly chosen sources"""
     curr_dir = path.dirname(path.abspath(__file__))
     file_path = path.join(curr_dir, file_name)
     return random.choice([
@@ -33,6 +35,7 @@ def source_choice(file_name: str = "file.json", url: str = DEFAULT_EXTERNAL_API_
 
 @app.get("/tasks")
 async def read_tasks(source: TaskSource = Depends(source_choice)) -> List[Task]:
+    """reads tasks from task source randomly chosen using source_choice and returns in to user (or any mistake should it arise)"""
     if not isinstance(source, TaskSource):
         logger.error(f"{type(source)} violates TaskSource protocol")
         raise HTTPException(
