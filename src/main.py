@@ -1,9 +1,11 @@
 import os.path as path
 import random
+from typing import List
 
 import uvicorn
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from constants import DEFAULT_EXTERNAL_API_URL
+from models import Task
 from protocols import TaskSource
 from sources.api_source import APISource
 from sources.file_source import FileSource
@@ -30,9 +32,13 @@ def source_choice(file_name: str = "file.json", url: str = DEFAULT_EXTERNAL_API_
 
 
 @app.get("/tasks")
-async def read_tasks(source: TaskSource = Depends(source_choice)):
+async def read_tasks(source: TaskSource = Depends(source_choice)) -> List[Task]:
     if not isinstance(source, TaskSource):
-        raise TypeError("source does not follow TaskSource protocol")
+        logger.error(f"{type(source)} violates TaskSource protocol")
+        raise HTTPException(
+            status_code=500,
+            detail="source protocol violation"
+        )
     source_type = source.__class__.__name__
 
     logger.info(f"Fetching tasks using source: {source_type}")

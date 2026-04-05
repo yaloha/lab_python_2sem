@@ -4,6 +4,6 @@ from models import Task
 
 @runtime_checkable
 class TaskSource(Protocol):
-    def get_tasks(self) -> List[Task]:
+    async def get_tasks(self) -> List[Task]:
         ...
 

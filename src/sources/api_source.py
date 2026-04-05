@@ -1,7 +1,13 @@
 import httpx
 from typing import List
+
+from fastapi import HTTPException
+import logging
 from constants import DEFAULT_EXTERNAL_API_URL
 from models import Task
+
+
+logger = logging.getLogger(__name__)
 
 
 class APISource:
@@ -20,8 +26,8 @@ class APISource:
                 return [Task(**details) for details in task_details]
 
             except httpx.HTTPError as e:
-                print(f"http error: {e}")
-                return []
+                logger.error(f"External API communication error: {e}")
+                raise HTTPException(status_code=502, detail="external API communication error")
             except Exception as e:
-                print(f"data parse error: {e}")
-                return []
+                logger.error(f"unexpected error in external API: {e}")
+                raise HTTPException(status_code=500, detail="internal error while fetching external tasks")

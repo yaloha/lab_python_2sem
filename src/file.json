@@ -1,17 +1,17 @@
 [
   {
     "id": 1,
-    "name": "Изучить FastAPI",
-    "payload": "Прочитать документацию про Dependency Injection и Lifespan."
+    "name": "you should wash dishes!",
+    "payload": "yeah, please do it asap"
   },
   {
     "id": 2,
-    "name": "Настроить FileSource",
-    "payload": "Убедиться, что кодировка файла UTF-8 и путь указан верно."
+    "name": "watch party!",
+    "payload": "artemis 2 WOHOOOOO!"
   },
   {
     "id": 3,
-    "123": "Подготовить Лабу №1",
-    "payload": "Проверить работу Protocol и Duck Typing через логгер."
+    "name": "sort of lesson",
+    "payload": "that i've learned from you"
   }
 ]

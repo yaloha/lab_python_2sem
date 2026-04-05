@@ -1,6 +1,9 @@
 import json
 from os.path import exists as path_exists
 from typing import List
+
+from fastapi import HTTPException
+
 from models import Task
 import logging
 
@@ -13,15 +16,13 @@ class FileSource:
 
     async def get_tasks(self) -> List[Task]:
         if not path_exists(self.file_path):
-            logger.error(f"no file found: {self.file_path}")
-            return []
+            raise HTTPException(status_code=404, detail=f"file {self.file_path} not found")
 
         try:
             with open(self.file_path, "r", encoding="utf-8") as file:
                 task_details = json.load(file)
-
             return [Task(**details) for details in task_details]
+
         except Exception as e:
             logger.error(f"unexpected error {self.file_path}: {e}")
-
-        return []
+            raise HTTPException(status_code=500, detail="internal server error")

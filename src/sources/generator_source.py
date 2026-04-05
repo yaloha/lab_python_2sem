@@ -4,7 +4,7 @@ import constants as constants
 
 class GeneratorSource:
     def __init__(self, count: int = 15):
-        self.count = count
+        self.count = max(0, count)
 
     async def get_tasks(self) -> list[Task]:
         return [
