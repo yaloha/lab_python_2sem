@@ -3,8 +3,8 @@ from typing import List
 
 from fastapi import HTTPException
 import logging
-from constants import DEFAULT_EXTERNAL_API_URL
-from models import Task
+from src.constants import DEFAULT_EXTERNAL_API_URL
+from src.models import Task
 
 
 logger = logging.getLogger(__name__)

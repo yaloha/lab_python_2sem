@@ -4,12 +4,12 @@ from typing import List
 
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
-from constants import DEFAULT_EXTERNAL_API_URL, DEFAULT_FILE_NAME, DEFAULT_RANDOM_TASKS_AMMOUNT
-from models import Task
-from protocols import TaskSource
-from sources.api_source import APISource
-from sources.file_source import FileSource
-from sources.generator_source import GeneratorSource
+from src.constants import DEFAULT_EXTERNAL_API_URL, DEFAULT_FILE_NAME, DEFAULT_RANDOM_TASKS_AMMOUNT
+from src.models import Task
+from src.protocols import TaskSource
+from src.sources.api_source import APISource
+from src.sources.file_source import FileSource
+from src.sources.generator_source import GeneratorSource
 import logging
 
 

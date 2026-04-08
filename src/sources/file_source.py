@@ -4,7 +4,7 @@ from typing import List
 
 from fastapi import HTTPException
 
-from models import Task
+from src.models import Task
 import logging
 
 

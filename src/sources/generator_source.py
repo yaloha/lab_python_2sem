@@ -1,6 +1,6 @@
 import random
-from models import Task
-import constants as constants
+from src.models import Task
+import src.constants as constants
 
 class GeneratorSource:
     def __init__(self, count: int = 5):
