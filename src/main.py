@@ -5,7 +5,7 @@ from typing import List
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
 
-from src.pydantic_models import TaskSchema
+from src.pydantic_models import TaskSchema, TaskFilterResponse
 from src.constants import DEFAULT_EXTERNAL_API_URL, DEFAULT_FILE_NAME, DEFAULT_RANDOM_TASKS_AMMOUNT
 from src.models import Task
 from src.protocols import TaskSource
@@ -52,8 +52,9 @@ async def read_tasks(source: TaskSource = Depends(source_choice)) -> List[TaskSc
     return await source.get_tasks()
 
 
-@app.get("/tasks/p/{priority}")
+@app.get("/tasks/p/{priority}", response_model=TaskFilterResponse)
 async def process_tasks(priority: int, source: TaskSource = Depends(source_choice)):
+    """demo endpoint that demonstrates filter_by_priority method"""
     queue = TaskQueue()
     await queue.load_from_source(source)
     all_tasks = [
@@ -73,8 +74,9 @@ async def process_tasks(priority: int, source: TaskSource = Depends(source_choic
         "filtered": filtered_tasks
     }
 
-@app.get("/tasks/s/{status}", response_model=List[TaskSchema])
+@app.get("/tasks/s/{status}", response_model=TaskFilterResponse)
 async def process_tasks(status: TaskStatus, source: TaskSource = Depends(source_choice)):
+    """demo endpoint that demonstrates filter_by_status method"""
     queue = TaskQueue()
     await queue.load_from_source(source)
     all_tasks = [

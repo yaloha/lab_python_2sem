@@ -1,5 +1,7 @@
 from datetime import datetime
 from enum import Enum
+from typing import Optional
+
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 
@@ -43,3 +45,10 @@ class PydanticTask(BaseModel):
     def summary(self) -> str:
         """as the non-data descriptor in Task"""
         return f"[{self.status.name}] #{self.id} - {self.name} (Priority: {self.priority})"
+
+class TaskFilterResponse(BaseModel):
+    filter_applied: Optional[str] = None
+    description: Optional[str] = None
+    total: int
+    original: list[TaskSchema]
+    filtered: list[TaskSchema]
