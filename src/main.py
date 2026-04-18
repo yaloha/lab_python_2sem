@@ -12,6 +12,8 @@ from src.protocols import TaskSource
 from src.sources.api_source import APISource
 from src.sources.file_source import FileSource
 from src.sources.generator_source import GeneratorSource
+from src.queue import TaskQueue
+from src.models import TaskStatus
 import logging
 
 
@@ -48,6 +50,49 @@ async def read_tasks(source: TaskSource = Depends(source_choice)) -> List[TaskSc
 
     logger.info(f"Fetching tasks using source: {source_type}")
     return await source.get_tasks()
+
+
+@app.get("/tasks/p/{priority}")
+async def process_tasks(priority: int, source: TaskSource = Depends(source_choice)):
+    queue = TaskQueue()
+    await queue.load_from_source(source)
+    all_tasks = [
+        TaskSchema(id=t.id, name=t.name, payload=t.payload, priority=t.priority)
+        for t in queue
+    ]
+    filtered_list = queue.filter_by_priority(priority)
+    filtered_tasks = [
+        TaskSchema(id=t.id, name=t.name, payload=t.payload, priority=t.priority)
+        for t in filtered_list
+    ]
+
+    return {
+        "description": f"filtration by priority >= {priority}",
+        "total": len(queue),
+        "original": all_tasks,
+        "filtered": filtered_tasks
+    }
+
+@app.get("/tasks/s/{status}", response_model=List[TaskSchema])
+async def process_tasks(status: TaskStatus, source: TaskSource = Depends(source_choice)):
+    queue = TaskQueue()
+    await queue.load_from_source(source)
+    all_tasks = [
+        TaskSchema(id=t.id, name=t.name, payload=t.payload, priority=t.priority)
+        for t in queue
+    ]
+    filtered_list = queue.filter_by_status(status)
+    filtered_tasks = [
+        TaskSchema(id=t.id, name=t.name, payload=t.payload, priority=t.priority)
+        for t in filtered_list
+    ]
+
+    return {
+        "filter_applied": status.value,
+        "total": len(queue),
+        "original": all_tasks,
+        "filtered": filtered_tasks
+    }
 
 if __name__ == "__main__":
     uvicorn.run("src.main:app", host="localhost", port=8000, reload=True)
