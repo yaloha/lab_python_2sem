@@ -4,6 +4,8 @@ from typing import List
 
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
+
+from src.pydantic_models import TaskSchema
 from src.constants import DEFAULT_EXTERNAL_API_URL, DEFAULT_FILE_NAME, DEFAULT_RANDOM_TASKS_AMMOUNT
 from src.models import Task
 from src.protocols import TaskSource
@@ -33,8 +35,8 @@ def source_choice(file_name: str = DEFAULT_FILE_NAME, url: str = DEFAULT_EXTERNA
     ])
 
 
-@app.get("/tasks")
-async def read_tasks(source: TaskSource = Depends(source_choice)) -> List[Task]:
+@app.get("/tasks", response_model=None)
+async def read_tasks(source: TaskSource = Depends(source_choice)) -> List[TaskSchema]:
     """reads tasks from task source randomly chosen using source_choice and returns in to user (or any mistake should it arise)"""
     if not isinstance(source, TaskSource):
         logger.error(f"{type(source)} violates TaskSource protocol")
@@ -48,4 +50,4 @@ async def read_tasks(source: TaskSource = Depends(source_choice)) -> List[Task]:
     return await source.get_tasks()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=8000, reload=True)
+    uvicorn.run("src.main:app", host="localhost", port=8000, reload=True)

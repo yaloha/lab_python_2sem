@@ -13,7 +13,8 @@ class GeneratorSource:
             Task(
                 id = random.randint(1, 9999999),
                 name = random.choice(constants.TASK_TITLES),
-                payload = random.choice(constants.TASK_PAYLOADS)
+                payload = random.choice(constants.TASK_PAYLOADS),
+                priority=random.randint(1, 10)
             )
             for _ in range(self.count)
         ]

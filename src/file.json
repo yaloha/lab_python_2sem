@@ -2,15 +2,23 @@
   {
     "id": 1,
     "name": "you should wash dishes!",
-    "payload": "yeah, please do it asap"
+    "payload": "yeah, please do it asap",
+    "priority": 6
   },
   {
     "id": 2,
     "name": "watch party!",
-    "payload": "artemis 2 WOHOOOOO!"
+    "payload": "artemis 2 WOHOOOOO!",
+    "priority": 10
   },
   {
     "id": 3,
+    "name": "sort of lesson",
+    "payload": "that i've learned from you",
+    "priority": 1
+  },
+  {
+    "id": "jagld",
     "name": "sort of lesson",
     "payload": "that i've learned from you"
   }

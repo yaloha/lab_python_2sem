@@ -1,14 +1,14 @@
 from typing import List
 
 from fastapi import FastAPI
-from constants import API_MOCK_TASKS
-from models import Task
+from src.constants import API_MOCK_TASKS
+from src.pydantic_models import TaskSchema
 
 app = FastAPI()
 
 mock_tasks = API_MOCK_TASKS
-@app.get("/api/v1/tasks")
-async def get_external_tasks() -> List[Task]:
+@app.get("/api/v1/tasks", response_model=List[TaskSchema])
+async def get_external_tasks() -> List[TaskSchema]:
     """mock api to return a list of tasks specified in constants file"""
     return mock_tasks
 
