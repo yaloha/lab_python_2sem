@@ -1,6 +1,8 @@
 import os.path as path
 import random
 from typing import List
+from src.handlers.task_executor import AsyncExecutor
+from src.handlers.handler_protocol import EmailNotificationHandler, StatisticsHandler
 
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException
@@ -12,7 +14,7 @@ from src.protocols import TaskSource
 from src.sources.api_source import APISource
 from src.sources.file_source import FileSource
 from src.sources.generator_source import GeneratorSource
-from src.queue import TaskQueue
+from src.task_queue import TaskQueue
 from src.models import TaskStatus
 import logging
 
@@ -95,6 +97,37 @@ async def process_tasks(status: TaskStatus, source: TaskSource = Depends(source_
         "original": all_tasks,
         "filtered": filtered_tasks
     }
+
+@app.post("/tasks/execute")
+async def execute_tasks(workers: int = 2, source: TaskSource = Depends(source_choice)):
+    """
+    Endpoint starts task handling from the source
+    """
+    tasks_list = await source.get_tasks()
+    if not tasks_list:
+        return {"message": "Source returned empty task list"}
+
+    executor = AsyncExecutor()
+
+    executor.register_handler("notify", EmailNotificationHandler())
+    executor.register_handler("calculate", StatisticsHandler())
+
+    executor.register_handler("TASK_TITLE_1", EmailNotificationHandler())
+    executor.register_handler("TASK_TITLE_2", StatisticsHandler())
+
+    await executor.enqueue_tasks(tasks_list)
+    await executor.start_processing(num_workers=workers)
+
+    await executor.stop_processing()
+
+    report = {
+        "source_used": source.__class__.__name__,
+        "total_received": len(tasks_list),
+        "processed_states": [
+            {"id": t.id, "name": t.name, "status": t.status.name} for t in tasks_list
+        ]
+    }
+    return report
 
 if __name__ == "__main__":
     uvicorn.run("src.main:app", host="localhost", port=8000, reload=True)
