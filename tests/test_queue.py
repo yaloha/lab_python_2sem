@@ -1,6 +1,6 @@
 import pytest
 from src.models import Task, TaskStatus
-from src.queue import TaskQueue
+from src.task_queue import TaskQueue
 
 
 @pytest.fixture
